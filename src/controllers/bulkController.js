@@ -28,7 +28,7 @@ exports.getOpenRequests = async (req, res) => {
     const requests = await BulkRequest.findAll({
         where: { status: 'OPEN' },
         include: [
-            { model: User, as: 'Entrepreneur', attributes: ['full_name'] }
+            { model: User, as: 'Entrepreneur', attributes: ['email'] }
         ],
         order: [['created_at', 'DESC']]
     });
@@ -82,7 +82,7 @@ exports.getQuotes = async (req, res) => {
 
     const quotes = await Quote.findAll({
         where: { bulk_request_id: request_id },
-        include: [{ model: User, as: 'Gaushala', attributes: ['full_name'] }]
+        include: [{ model: User, as: 'Gaushala', attributes: ['email'] }]
     });
 
     res.json({ success: true, data: quotes });

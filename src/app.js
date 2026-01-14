@@ -15,6 +15,7 @@ const logisticsRoutes = require('./routes/logisticsRoutes');
 const trackingRoutes = require('./routes/trackingRoutes');
 const transporterRoutes = require('./routes/transporterRoutes');
 const bulkRoutes = require('./routes/bulkRoutes');
+const subscriptionRoutes = require('./routes/subscriptionRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -37,6 +38,7 @@ app.use('/api/v1/logistics', logisticsRoutes);
 app.use('/api/v1/tracking', trackingRoutes);
 app.use('/api/v1/transporter', transporterRoutes);
 app.use('/api/v1/bulk', bulkRoutes);
+app.use('/api/v1/subscription', subscriptionRoutes);
 
 // Health Check
 app.get('/health', (req, res) => {

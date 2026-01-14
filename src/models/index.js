@@ -29,6 +29,8 @@ const TransporterProfile = require('./TransporterProfile');
 const Vehicle = require('./Vehicle');
 const BulkRequest = require('./BulkRequest');
 const Quote = require('./Quote');
+const SubscriptionPlan = require('./SubscriptionPlan');
+const UserSubscription = require('./UserSubscription');
 
 // Module 1: Auth
 User.hasMany(VerificationToken, { foreignKey: 'user_id' });
@@ -143,7 +145,7 @@ TransporterProfile.belongsTo(User, { foreignKey: 'user_id' });
 User.hasMany(Vehicle, { foreignKey: 'transporter_id', onDelete: 'CASCADE' });
 Vehicle.belongsTo(User, { foreignKey: 'transporter_id' });
 
-// Module 13: Bulk Order System [NEW]
+// Module 13: Bulk Order System
 User.hasMany(BulkRequest, { foreignKey: 'entrepreneur_id' });
 BulkRequest.belongsTo(User, { as: 'Entrepreneur', foreignKey: 'entrepreneur_id' });
 
@@ -159,6 +161,18 @@ Quote.belongsTo(BulkRequest, { foreignKey: 'bulk_request_id' });
 User.hasMany(Quote, { foreignKey: 'gaushala_id' });
 Quote.belongsTo(User, { as: 'Gaushala', foreignKey: 'gaushala_id' });
 
+// Module 14: Subscription Management [NEW]
+User.hasMany(SubscriptionPlan, { foreignKey: 'gaushala_id', onDelete: 'CASCADE' });
+SubscriptionPlan.belongsTo(User, { foreignKey: 'gaushala_id' });
+
+Product.hasMany(SubscriptionPlan, { foreignKey: 'product_id' });
+SubscriptionPlan.belongsTo(Product, { foreignKey: 'product_id' });
+
+User.hasMany(UserSubscription, { foreignKey: 'user_id', onDelete: 'CASCADE' });
+UserSubscription.belongsTo(User, { foreignKey: 'user_id' });
+
+SubscriptionPlan.hasMany(UserSubscription, { foreignKey: 'plan_id' });
+UserSubscription.belongsTo(SubscriptionPlan, { foreignKey: 'plan_id' });
 
 const syncDatabase = async () => {
   try {
@@ -203,5 +217,7 @@ module.exports = {
   Vehicle,
   BulkRequest,
   Quote,
+  SubscriptionPlan,
+  UserSubscription,
   syncDatabase
 };
