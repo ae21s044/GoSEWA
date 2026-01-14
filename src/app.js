@@ -12,6 +12,7 @@ const reviewRoutes = require('./routes/reviewRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const analyticsRoutes = require('./routes/analyticsRoutes');
 const logisticsRoutes = require('./routes/logisticsRoutes');
+const trackingRoutes = require('./routes/trackingRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -31,6 +32,7 @@ app.use('/api/v1/reviews', reviewRoutes);
 app.use('/api/v1/notifications', notificationRoutes);
 app.use('/api/v1/analytics', analyticsRoutes);
 app.use('/api/v1/logistics', logisticsRoutes);
+app.use('/api/v1/tracking', trackingRoutes);
 
 // Health Check
 app.get('/health', (req, res) => {

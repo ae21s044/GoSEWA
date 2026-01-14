@@ -24,6 +24,7 @@ const Review = require('./Review');
 const Notification = require('./Notification');
 const NotificationTemplate = require('./NotificationTemplate');
 const Shipment = require('./Shipment');
+const ShipmentUpdate = require('./ShipmentUpdate');
 
 // Module 1: Auth
 User.hasMany(VerificationToken, { foreignKey: 'user_id' });
@@ -123,9 +124,13 @@ Review.belongsTo(Order, { foreignKey: 'order_id' });
 User.hasMany(Notification, { foreignKey: 'user_id', onDelete: 'CASCADE' });
 Notification.belongsTo(User, { foreignKey: 'user_id' });
 
-// Module 10: Logistics [NEW]
+// Module 10: Logistics
 Order.hasOne(Shipment, { foreignKey: 'order_id', onDelete: 'CASCADE' });
 Shipment.belongsTo(Order, { foreignKey: 'order_id' });
+
+// Module 11: Tracking [NEW]
+Shipment.hasMany(ShipmentUpdate, { foreignKey: 'shipment_id', onDelete: 'CASCADE' });
+ShipmentUpdate.belongsTo(Shipment, { foreignKey: 'shipment_id' });
 
 const syncDatabase = async () => {
   try {
@@ -165,5 +170,6 @@ module.exports = {
   Notification,
   NotificationTemplate,
   Shipment,
+  ShipmentUpdate,
   syncDatabase
 };
