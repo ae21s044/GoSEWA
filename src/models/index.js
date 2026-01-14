@@ -27,6 +27,8 @@ const Shipment = require('./Shipment');
 const ShipmentUpdate = require('./ShipmentUpdate');
 const TransporterProfile = require('./TransporterProfile');
 const Vehicle = require('./Vehicle');
+const BulkRequest = require('./BulkRequest');
+const Quote = require('./Quote');
 
 // Module 1: Auth
 User.hasMany(VerificationToken, { foreignKey: 'user_id' });
@@ -134,12 +136,29 @@ Shipment.belongsTo(Order, { foreignKey: 'order_id' });
 Shipment.hasMany(ShipmentUpdate, { foreignKey: 'shipment_id', onDelete: 'CASCADE' });
 ShipmentUpdate.belongsTo(Shipment, { foreignKey: 'shipment_id' });
 
-// Module 12: Transporter Management [NEW]
+// Module 12: Transporter Management
 User.hasOne(TransporterProfile, { foreignKey: 'user_id', onDelete: 'CASCADE' });
 TransporterProfile.belongsTo(User, { foreignKey: 'user_id' });
 
 User.hasMany(Vehicle, { foreignKey: 'transporter_id', onDelete: 'CASCADE' });
 Vehicle.belongsTo(User, { foreignKey: 'transporter_id' });
+
+// Module 13: Bulk Order System [NEW]
+User.hasMany(BulkRequest, { foreignKey: 'entrepreneur_id' });
+BulkRequest.belongsTo(User, { as: 'Entrepreneur', foreignKey: 'entrepreneur_id' });
+
+Category.hasMany(BulkRequest, { foreignKey: 'category_id' });
+BulkRequest.belongsTo(Category, { foreignKey: 'category_id' });
+
+Product.hasMany(BulkRequest, { foreignKey: 'product_id' });
+BulkRequest.belongsTo(Product, { foreignKey: 'product_id' });
+
+BulkRequest.hasMany(Quote, { foreignKey: 'bulk_request_id', onDelete: 'CASCADE' });
+Quote.belongsTo(BulkRequest, { foreignKey: 'bulk_request_id' });
+
+User.hasMany(Quote, { foreignKey: 'gaushala_id' });
+Quote.belongsTo(User, { as: 'Gaushala', foreignKey: 'gaushala_id' });
+
 
 const syncDatabase = async () => {
   try {
@@ -182,5 +201,7 @@ module.exports = {
   ShipmentUpdate,
   TransporterProfile,
   Vehicle,
+  BulkRequest,
+  Quote,
   syncDatabase
 };
