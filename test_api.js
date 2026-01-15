@@ -1,0 +1,208 @@
+const axios = require('axios');
+
+const BASE_URL = 'http://localhost:3000/api/v1';
+let authToken = '';
+let userId = '';
+let productId = '';
+let orderId = '';
+
+const colors = {
+    green: '\x1b[32m',
+    red: '\x1b[31m',
+    yellow: '\x1b[33m',
+    blue: '\x1b[36m',
+    reset: '\x1b[0m'
+};
+
+function log(message, color = 'reset') {
+    console.log(`${colors[color]}${message}${colors.reset}`);
+}
+
+async function test(name, fn) {
+    try {
+        await fn();
+        log(`✓ ${name}`, 'green');
+        return true;
+    } catch (error) {
+        log(`✗ ${name}`, 'red');
+        if (error.response) {
+            log(`  Status: ${error.response.status}`, 'yellow');
+            log(`  Message: ${error.response.data?.message || error.message}`, 'yellow');
+        } else {
+            log(`  Error: ${error.message}`, 'yellow');
+        }
+        return false;
+    }
+}
+
+async function runTests() {
+    log('\n🧪 GoSEWA API Testing Suite\n', 'blue');
+    
+    const results = {
+        passed: 0,
+        failed: 0
+    };
+
+    // Test 1: Health Check
+    if (await test('Health Check', async () => {
+        const res = await axios.get(`${BASE_URL}/health`);
+        if (res.data.status !== 'healthy') throw new Error('API not healthy');
+    })) results.passed++; else results.failed++;
+
+    // Test 2: Register User
+    if (await test('Register User (Entrepreneur)', async () => {
+        const res = await axios.post(`${BASE_URL}/auth/register`, {
+            full_name: 'Test Entrepreneur',
+            email: `test${Date.now()}@example.com`,
+            password: 'password123',
+            phone: '1234567890',
+            user_type: 'ENTREPRENEUR'
+        });
+        if (!res.data.success) throw new Error('Registration failed');
+        userId = res.data.data.user.id;
+    })) results.passed++; else results.failed++;
+
+    // Test 3: Login
+    if (await test('Login User', async () => {
+        const res = await axios.post(`${BASE_URL}/auth/login`, {
+            email: `test${userId}@example.com`,
+            password: 'password123'
+        });
+        if (!res.data.success) throw new Error('Login failed');
+        authToken = res.data.data.token;
+    })) results.passed++; else results.failed++;
+
+    const headers = { Authorization: `Bearer ${authToken}` };
+
+    // Test 4: Get Profile
+    if (await test('Get User Profile', async () => {
+        const res = await axios.get(`${BASE_URL}/profile`, { headers });
+        if (!res.data.success) throw new Error('Failed to get profile');
+    })) results.passed++; else results.failed++;
+
+    // Test 5: Get Categories
+    if (await test('Get Product Categories', async () => {
+        const res = await axios.get(`${BASE_URL}/inventory/categories`, { headers });
+        if (!res.data.success) throw new Error('Failed to get categories');
+    })) results.passed++; else results.failed++;
+
+    // Test 6: Create Product
+    if (await test('Create Product', async () => {
+        const res = await axios.post(`${BASE_URL}/inventory/products`, {
+            name: 'Test Milk Product',
+            description: 'Fresh organic milk',
+            price: 60,
+            quantity_available: 100,
+            unit: 'LITERS',
+            category_id: 1
+        }, { headers });
+        if (!res.data.success) throw new Error('Failed to create product');
+        productId = res.data.data.id;
+    })) results.passed++; else results.failed++;
+
+    // Test 7: Get Products
+    if (await test('Get All Products', async () => {
+        const res = await axios.get(`${BASE_URL}/inventory/products`, { headers });
+        if (!res.data.success) throw new Error('Failed to get products');
+    })) results.passed++; else results.failed++;
+
+    // Test 8: Get Product by ID
+    if (await test('Get Product by ID', async () => {
+        const res = await axios.get(`${BASE_URL}/inventory/products/${productId}`, { headers });
+        if (!res.data.success) throw new Error('Failed to get product');
+    })) results.passed++; else results.failed++;
+
+    // Test 9: Add to Cart
+    if (await test('Add Product to Cart', async () => {
+        const res = await axios.post(`${BASE_URL}/cart`, {
+            product_id: productId,
+            quantity: 5
+        }, { headers });
+        if (!res.data.success) throw new Error('Failed to add to cart');
+    })) results.passed++; else results.failed++;
+
+    // Test 10: Get Cart
+    if (await test('Get Shopping Cart', async () => {
+        const res = await axios.get(`${BASE_URL}/cart`, { headers });
+        if (!res.data.success) throw new Error('Failed to get cart');
+    })) results.passed++; else results.failed++;
+
+    // Test 11: Create Order
+    if (await test('Create Order', async () => {
+        const res = await axios.post(`${BASE_URL}/orders`, {
+            delivery_address: {
+                address_line1: '123 Test Street',
+                city: 'Mumbai',
+                state: 'Maharashtra',
+                pincode: '400001'
+            },
+            payment_method: 'COD'
+        }, { headers });
+        if (!res.data.success) throw new Error('Failed to create order');
+        orderId = res.data.data.id;
+    })) results.passed++; else results.failed++;
+
+    // Test 12: Get Orders
+    if (await test('Get User Orders', async () => {
+        const res = await axios.get(`${BASE_URL}/orders`, { headers });
+        if (!res.data.success) throw new Error('Failed to get orders');
+    })) results.passed++; else results.failed++;
+
+    // Test 13: Get Order by ID
+    if (await test('Get Order Details', async () => {
+        const res = await axios.get(`${BASE_URL}/orders/${orderId}`, { headers });
+        if (!res.data.success) throw new Error('Failed to get order details');
+    })) results.passed++; else results.failed++;
+
+    // Test 14: Get Notifications
+    if (await test('Get Notifications', async () => {
+        const res = await axios.get(`${BASE_URL}/notifications`, { headers });
+        if (!res.data.success) throw new Error('Failed to get notifications');
+    })) results.passed++; else results.failed++;
+
+    // Test 15: Analytics (may fail if no data)
+    if (await test('Get Analytics Data', async () => {
+        const res = await axios.get(`${BASE_URL}/analytics/sales`, { headers });
+        // Analytics might return empty data, that's ok
+    })) results.passed++; else results.failed++;
+
+    // Test 16: Livestock (for Gaushala users)
+    if (await test('Get Livestock (may fail for non-Gaushala)', async () => {
+        const res = await axios.get(`${BASE_URL}/stock/livestock`, { headers });
+        // May fail if user is not Gaushala type
+    })) results.passed++; else results.failed++;
+
+    // Test 17: Waste Logs
+    if (await test('Get Waste Logs (may fail for non-Gaushala)', async () => {
+        const res = await axios.get(`${BASE_URL}/waste/logs`, { headers });
+        // May fail if user is not Gaushala type
+    })) results.passed++; else results.failed++;
+
+    // Test 18: Production Logs
+    if (await test('Get Production Logs (may fail for non-Gaushala)', async () => {
+        const res = await axios.get(`${BASE_URL}/production/logs`, { headers });
+        // May fail if user is not Gaushala type
+    })) results.passed++; else results.failed++;
+
+    // Summary
+    log('\n📊 Test Results:', 'blue');
+    log(`   Passed: ${results.passed}`, 'green');
+    log(`   Failed: ${results.failed}`, 'red');
+    log(`   Total:  ${results.passed + results.failed}`, 'yellow');
+    
+    const percentage = ((results.passed / (results.passed + results.failed)) * 100).toFixed(1);
+    log(`   Success Rate: ${percentage}%\n`, percentage > 80 ? 'green' : 'yellow');
+
+    if (results.failed === 0) {
+        log('🎉 All tests passed! Application is working correctly.\n', 'green');
+    } else if (percentage > 80) {
+        log('✅ Most tests passed. Some features may need attention.\n', 'yellow');
+    } else {
+        log('⚠️  Many tests failed. Please check the application.\n', 'red');
+    }
+}
+
+runTests().catch(err => {
+    log(`\n❌ Test suite failed to run: ${err.message}\n`, 'red');
+    process.exit(1);
+});

@@ -1,4 +1,5 @@
 const { Payment, Order, Invoice, Refund, sequelize, OrderStatusHistory } = require('../models');
+const paymentAdapter = require('../services/adapters/paymentAdapter');
 
 // Mock Payment Processing
 exports.processPayment = async (req, res) => {
@@ -14,18 +15,29 @@ exports.processPayment = async (req, res) => {
         return res.status(400).json({ success: false, message: 'Invalid payment amount' });
     }
 
-    // Simulate Gateway Response
-    const paymentId = `PAY-${Date.now()}`; // Mock Gateway ID
-    const status = 'SUCCESS'; // Simulating success
+    // Use Adapter for Processing
+    const gatewayResult = await paymentAdapter.processTransaction({
+        amount,
+        currency: 'INR',
+        method: payment_method,
+        description: `Order #${order_id}`
+    });
+
+    if (!gatewayResult.success) {
+        await t.rollback();
+        return res.status(400).json({ success: false, message: 'Payment failed', error: gatewayResult.error });
+    }
+
+    const { transactionId, rawResponse } = gatewayResult;
 
     // Create Payment Record
     const payment = await Payment.create({
         order_id,
-        payment_id: paymentId,
+        payment_id: transactionId,
         payment_method,
         amount,
-        status,
-        gateway_response: { mock: true, transaction_id: paymentId },
+        status: 'SUCCESS',
+        gateway_response: rawResponse,
         paid_at: new Date()
     }, { transaction: t });
 
@@ -40,7 +52,7 @@ exports.processPayment = async (req, res) => {
         order_id,
         new_status: 'CONFIRMED',
         changed_by: req.user.id,
-        notes: `Payment successful via ${payment_method}`
+        notes: `Payment successful via ${payment_method} (Txn: ${transactionId})`
     }, { transaction: t });
 
     // Generate Invoice (Auto)
@@ -61,7 +73,7 @@ exports.processPayment = async (req, res) => {
     res.status(201).json({ success: true, message: 'Payment processed successfully', data: payment });
 
   } catch (error) {
-    await t.rollback();
+    if (t) await t.rollback();
     res.status(500).json({ success: false, error: error.message });
   }
 };

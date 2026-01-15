@@ -47,7 +47,7 @@ exports.updateProfile = async (req, res) => {
 // Add Address
 exports.addAddress = async (req, res) => {
   try {
-    const { address_type, street_address, city, state, postal_code, is_default } = req.body;
+    const { address_type, street_address, city, state, postal_code, is_default, latitude, longitude } = req.body;
 
     if (is_default) {
       // Unset previous default
@@ -56,7 +56,7 @@ exports.addAddress = async (req, res) => {
 
     const address = await Address.create({
       user_id: req.user.id,
-      address_type, street_address, city, state, postal_code, is_default
+      address_type, street_address, city, state, postal_code, is_default, latitude, longitude
     });
 
     res.status(201).json({ success: true, message: 'Address added', data: address });
@@ -77,7 +77,7 @@ exports.updateAddress = async (req, res) => {
        await Address.update({ is_default: false }, { where: { user_id: req.user.id } });
     }
 
-    await address.update(req.body);
+    await address.update(req.body); // req.body includes lat/long if sent
     res.json({ success: true, message: 'Address updated', data: address });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });

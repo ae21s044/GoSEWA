@@ -12,7 +12,7 @@ const comparePassword = async (password, hash) => {
 
 const generateToken = (user) => {
   return jwt.sign(
-    { id: user.id, email: user.email, role: user.user_type },
+    { id: user.id, email: user.email, user_type: user.user_type, role: user.user_type }, // Keeping role for backward compat if any
     process.env.JWT_SECRET || 'default_secret_key_change_me',
     { expiresIn: '24h' }
   );

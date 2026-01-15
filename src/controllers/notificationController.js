@@ -1,6 +1,27 @@
 const { Notification, User } = require('../models');
+const notificationAdapter = require('../services/adapters/notificationAdapter');
 
-// Fetch User Notifications
+// ... (getUserNotifications and markAsRead remain same)
+
+// Internal Helper: Send Notification
+exports.sendNotificationResult = async ({ user_id, type, title, message, metadata }) => {
+    try {
+        // 1. Persist to DB (In-App Notification)
+        await Notification.create({
+            user_id, type, title, message, metadata
+        });
+
+        // 2. Send External Notification (Push/SMS/Email) via Adapter
+        // For simplicity, we just send a generic "Push" log here.
+        // In full impl, we'd check user preferences (e.g., if user.email_notifications_enabled)
+        await notificationAdapter.sendPush({ userId: user_id, title, message, metadata });
+
+        return true;
+    } catch (e) {
+        console.error('Notification Error:', e);
+        return false;
+    }
+};
 exports.getUserNotifications = async (req, res) => {
   try {
     const userId = req.user.id;

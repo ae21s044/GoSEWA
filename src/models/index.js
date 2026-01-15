@@ -34,6 +34,16 @@ const UserSubscription = require('./UserSubscription');
 const Certification = require('./Certification');
 const Scheme = require('./Scheme');
 const SchemeApplication = require('./SchemeApplication');
+const ForecastData = require('./ForecastData');
+const DeliveryRoute = require('./DeliveryRoute');
+const RouteStop = require('./RouteStop');
+const ColdChainLog = require('./ColdChainLog');
+const ColdChainAlert = require('./ColdChainAlert');
+const Cattle = require('./Cattle');
+const HealthRecord = require('./HealthRecord');
+const MilkProductionLog = require('./MilkProductionLog');
+const WasteCollection = require('./WasteCollection');
+const ByProductProduction = require('./ByProductProduction');
 
 // Module 1: Auth
 User.hasMany(VerificationToken, { foreignKey: 'user_id' });
@@ -188,6 +198,56 @@ SchemeApplication.belongsTo(Scheme, { foreignKey: 'scheme_id' });
 User.hasMany(SchemeApplication, { foreignKey: 'user_id', onDelete: 'CASCADE' });
 SchemeApplication.belongsTo(User, { foreignKey: 'user_id' });
 
+// Module 17: Demand Forecasting
+User.hasMany(ForecastData, { foreignKey: 'gaushala_id', onDelete: 'CASCADE' });
+ForecastData.belongsTo(User, { foreignKey: 'gaushala_id' });
+
+Product.hasMany(ForecastData, { foreignKey: 'product_id', onDelete: 'CASCADE' });
+ForecastData.belongsTo(Product, { foreignKey: 'product_id' });
+
+// Module 18: Route Optimization
+User.hasMany(DeliveryRoute, { foreignKey: 'transporter_id', onDelete: 'CASCADE' });
+DeliveryRoute.belongsTo(User, { as: 'Transporter', foreignKey: 'transporter_id' });
+
+Vehicle.hasMany(DeliveryRoute, { foreignKey: 'vehicle_id' });
+DeliveryRoute.belongsTo(Vehicle, { foreignKey: 'vehicle_id' });
+
+DeliveryRoute.hasMany(RouteStop, { foreignKey: 'route_id', as: 'Stops', onDelete: 'CASCADE' });
+RouteStop.belongsTo(DeliveryRoute, { foreignKey: 'route_id' });
+
+Order.hasOne(RouteStop, { foreignKey: 'order_id' });
+RouteStop.belongsTo(Order, { foreignKey: 'order_id' });
+
+// Module 20: Cold Chain
+Shipment.hasMany(ColdChainLog, { foreignKey: 'shipment_id', onDelete: 'CASCADE' });
+ColdChainLog.belongsTo(Shipment, { foreignKey: 'shipment_id' });
+
+Vehicle.hasMany(ColdChainLog, { foreignKey: 'vehicle_id' });
+ColdChainLog.belongsTo(Vehicle, { foreignKey: 'vehicle_id' });
+
+ColdChainLog.hasMany(ColdChainAlert, { foreignKey: 'log_id', onDelete: 'CASCADE' });
+ColdChainAlert.belongsTo(ColdChainLog, { foreignKey: 'log_id' });
+
+Shipment.hasMany(ColdChainAlert, { foreignKey: 'shipment_id' });
+ColdChainAlert.belongsTo(Shipment, { foreignKey: 'shipment_id' });
+
+// Module 21: Live Stock Management
+User.hasMany(Cattle, { foreignKey: 'gaushala_id', onDelete: 'CASCADE' });
+Cattle.belongsTo(User, { foreignKey: 'gaushala_id' });
+
+Cattle.hasMany(HealthRecord, { foreignKey: 'cattle_id', onDelete: 'CASCADE' });
+HealthRecord.belongsTo(Cattle, { foreignKey: 'cattle_id' });
+
+Cattle.hasMany(MilkProductionLog, { foreignKey: 'cattle_id', onDelete: 'CASCADE' });
+MilkProductionLog.belongsTo(Cattle, { foreignKey: 'cattle_id' });
+
+// Module 22: Waste-to-Value
+User.hasMany(WasteCollection, { foreignKey: 'gaushala_id', onDelete: 'CASCADE' });
+WasteCollection.belongsTo(User, { foreignKey: 'gaushala_id' });
+
+User.hasMany(ByProductProduction, { foreignKey: 'gaushala_id', onDelete: 'CASCADE' });
+ByProductProduction.belongsTo(User, { foreignKey: 'gaushala_id' });
+
 const syncDatabase = async () => {
   try {
     await sequelize.authenticate();
@@ -236,5 +296,15 @@ module.exports = {
   Certification,
   Scheme,
   SchemeApplication,
+  ForecastData,
+  DeliveryRoute,
+  RouteStop,
+  ColdChainLog,
+  ColdChainAlert,
+  Cattle,
+  HealthRecord,
+  MilkProductionLog,
+  WasteCollection,
+  ByProductProduction,
   syncDatabase
 };
