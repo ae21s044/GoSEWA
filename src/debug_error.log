@@ -1,0 +1,77 @@
+2026-01-17T08:06:48.492Z - Error
+    at Database.<anonymous> (C:\Antigravity\GoSEWA\node_modules\sequelize\lib\dialects\sqlite\query.js:185:27)
+    at C:\Antigravity\GoSEWA\node_modules\sequelize\lib\dialects\sqlite\query.js:183:50
+    at new Promise (<anonymous>)
+    at Query.run (C:\Antigravity\GoSEWA\node_modules\sequelize\lib\dialects\sqlite\query.js:183:12)
+    at C:\Antigravity\GoSEWA\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async SQLiteQueryInterface.insert (C:\Antigravity\GoSEWA\node_modules\sequelize\lib\dialects\abstract\query-interface.js:308:21)
+    at async model.save (C:\Antigravity\GoSEWA\node_modules\sequelize\lib\model.js:2490:35)
+    at async Cattle.create (C:\Antigravity\GoSEWA\node_modules\sequelize\lib\model.js:1362:12)
+    at async exports.addLivestock (C:\Antigravity\GoSEWA\src\controllers\stockController.js:28:24)
+2026-01-17T08:07:09.309Z - Error
+    at Database.<anonymous> (C:\Antigravity\GoSEWA\node_modules\sequelize\lib\dialects\sqlite\query.js:185:27)
+    at C:\Antigravity\GoSEWA\node_modules\sequelize\lib\dialects\sqlite\query.js:183:50
+    at new Promise (<anonymous>)
+    at Query.run (C:\Antigravity\GoSEWA\node_modules\sequelize\lib\dialects\sqlite\query.js:183:12)
+    at C:\Antigravity\GoSEWA\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async SQLiteQueryInterface.insert (C:\Antigravity\GoSEWA\node_modules\sequelize\lib\dialects\abstract\query-interface.js:308:21)
+    at async model.save (C:\Antigravity\GoSEWA\node_modules\sequelize\lib\model.js:2490:35)
+    at async Cattle.create (C:\Antigravity\GoSEWA\node_modules\sequelize\lib\model.js:1362:12)
+    at async exports.addLivestock (C:\Antigravity\GoSEWA\src\controllers\stockController.js:28:24)
+2026-01-17T09:13:51.575Z - Error
+    at Database.<anonymous> (C:\Antigravity\GoSEWA\node_modules\sequelize\lib\dialects\sqlite\query.js:185:27)
+    at C:\Antigravity\GoSEWA\node_modules\sequelize\lib\dialects\sqlite\query.js:183:50
+    at new Promise (<anonymous>)
+    at Query.run (C:\Antigravity\GoSEWA\node_modules\sequelize\lib\dialects\sqlite\query.js:183:12)
+    at C:\Antigravity\GoSEWA\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async SQLiteQueryInterface.insert (C:\Antigravity\GoSEWA\node_modules\sequelize\lib\dialects\abstract\query-interface.js:308:21)
+    at async model.save (C:\Antigravity\GoSEWA\node_modules\sequelize\lib\model.js:2490:35)
+    at async Cattle.create (C:\Antigravity\GoSEWA\node_modules\sequelize\lib\model.js:1362:12)
+    at async exports.addLivestock (C:\Antigravity\GoSEWA\src\controllers\stockController.js:28:24)
+2026-01-17T09:16:36.206Z - Error
+    at Database.<anonymous> (C:\Antigravity\GoSEWA\node_modules\sequelize\lib\dialects\sqlite\query.js:185:27)
+    at C:\Antigravity\GoSEWA\node_modules\sequelize\lib\dialects\sqlite\query.js:183:50
+    at new Promise (<anonymous>)
+    at Query.run (C:\Antigravity\GoSEWA\node_modules\sequelize\lib\dialects\sqlite\query.js:183:12)
+    at C:\Antigravity\GoSEWA\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async SQLiteQueryInterface.insert (C:\Antigravity\GoSEWA\node_modules\sequelize\lib\dialects\abstract\query-interface.js:308:21)
+    at async model.save (C:\Antigravity\GoSEWA\node_modules\sequelize\lib\model.js:2490:35)
+    at async Cattle.create (C:\Antigravity\GoSEWA\node_modules\sequelize\lib\model.js:1362:12)
+    at async exports.addLivestock (C:\Antigravity\GoSEWA\src\controllers\stockController.js:28:24)
+2026-01-17T09:17:16.873Z - Error
+    at Database.<anonymous> (C:\Antigravity\GoSEWA\node_modules\sequelize\lib\dialects\sqlite\query.js:185:27)
+    at C:\Antigravity\GoSEWA\node_modules\sequelize\lib\dialects\sqlite\query.js:183:50
+    at new Promise (<anonymous>)
+    at Query.run (C:\Antigravity\GoSEWA\node_modules\sequelize\lib\dialects\sqlite\query.js:183:12)
+    at C:\Antigravity\GoSEWA\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async SQLiteQueryInterface.insert (C:\Antigravity\GoSEWA\node_modules\sequelize\lib\dialects\abstract\query-interface.js:308:21)
+    at async model.save (C:\Antigravity\GoSEWA\node_modules\sequelize\lib\model.js:2490:35)
+    at async Cattle.create (C:\Antigravity\GoSEWA\node_modules\sequelize\lib\model.js:1362:12)
+    at async exports.addLivestock (C:\Antigravity\GoSEWA\src\controllers\stockController.js:28:24)
+2026-01-17T09:19:08.810Z - Error
+    at Database.<anonymous> (C:\Antigravity\GoSEWA\node_modules\sequelize\lib\dialects\sqlite\query.js:185:27)
+    at C:\Antigravity\GoSEWA\node_modules\sequelize\lib\dialects\sqlite\query.js:183:50
+    at new Promise (<anonymous>)
+    at Query.run (C:\Antigravity\GoSEWA\node_modules\sequelize\lib\dialects\sqlite\query.js:183:12)
+    at C:\Antigravity\GoSEWA\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async SQLiteQueryInterface.insert (C:\Antigravity\GoSEWA\node_modules\sequelize\lib\dialects\abstract\query-interface.js:308:21)
+    at async model.save (C:\Antigravity\GoSEWA\node_modules\sequelize\lib\model.js:2490:35)
+    at async Cattle.create (C:\Antigravity\GoSEWA\node_modules\sequelize\lib\model.js:1362:12)
+    at async exports.addLivestock (C:\Antigravity\GoSEWA\src\controllers\stockController.js:28:24)
+2026-01-17T09:29:58.464Z - MSG: SQLITE_CONSTRAINT: FOREIGN KEY constraint failed - STACK: Error
+    at Database.<anonymous> (C:\Antigravity\GoSEWA\node_modules\sequelize\lib\dialects\sqlite\query.js:185:27)
+    at C:\Antigravity\GoSEWA\node_modules\sequelize\lib\dialects\sqlite\query.js:183:50
+    at new Promise (<anonymous>)
+    at Query.run (C:\Antigravity\GoSEWA\node_modules\sequelize\lib\dialects\sqlite\query.js:183:12)
+    at C:\Antigravity\GoSEWA\node_modules\sequelize\lib\sequelize.js:315:28
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async SQLiteQueryInterface.insert (C:\Antigravity\GoSEWA\node_modules\sequelize\lib\dialects\abstract\query-interface.js:308:21)
+    at async model.save (C:\Antigravity\GoSEWA\node_modules\sequelize\lib\model.js:2490:35)
+    at async Cattle.create (C:\Antigravity\GoSEWA\node_modules\sequelize\lib\model.js:1362:12)
+    at async exports.addLivestock (C:\Antigravity\GoSEWA\src\controllers\stockController.js:49:24)

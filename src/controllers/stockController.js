@@ -32,7 +32,7 @@ exports.addLivestock = async (req, res) => {
             breed,
             dob,
             gender,
-            rfid_tag,
+            rfid_tag: rfid_tag ? rfid_tag : null, // Fix for unique constraint on empty string
             lactation_number,
             current_status: current_status || 'MILKING',
             current_group,
@@ -40,10 +40,17 @@ exports.addLivestock = async (req, res) => {
             entry_date: entry_date || new Date()
         });
 
-        res.status(201).json({ success: true, message: 'Livestock registered successfully', data: cattle });
+        res.status(201).json({ success: true, message: 'Gauvansh registered successfully', data: cattle });
 
     } catch (error) {
         console.error('Error adding livestock:', error);
+        if (error.name === 'SequelizeUniqueConstraintError') {
+             const field = error.errors[0].path;
+             const message = field === 'tag_id' ? 'Tag ID already exists' : 
+                             field === 'rfid_tag' ? 'RFID Tag already exists' : 
+                             'Duplicate entry found';
+             return res.status(400).json({ success: false, message });
+        }
         res.status(500).json({ success: false, error: error.message });
     }
 };
@@ -134,7 +141,7 @@ exports.updateLivestock = async (req, res) => {
         const updates = req.body;
         
         const cattle = await Cattle.findOne({ where: { id, gaushala_id: req.user.id } });
-        if (!cattle) return res.status(404).json({ success: false, message: 'Livestock not found' });
+        if (!cattle) return res.status(404).json({ success: false, message: 'Gauvansh not found' });
 
         // Handle age to DOB update if age is provided
         if (updates.age !== undefined) {
@@ -144,7 +151,7 @@ exports.updateLivestock = async (req, res) => {
         }
 
         await cattle.update(updates);
-        res.json({ success: true, message: 'Livestock updated', data: cattle });
+        res.json({ success: true, message: 'Gauvansh updated', data: cattle });
     } catch (error) {
         console.error('Error updating livestock:', error);
         res.status(500).json({ success: false, error: error.message });
@@ -155,10 +162,10 @@ exports.deleteLivestock = async (req, res) => {
     try {
         const { id } = req.params;
         const cattle = await Cattle.findOne({ where: { id, gaushala_id: req.user.id } });
-        if (!cattle) return res.status(404).json({ success: false, message: 'Livestock not found' });
+        if (!cattle) return res.status(404).json({ success: false, message: 'Gauvansh not found' });
 
         await cattle.destroy();
-        res.json({ success: true, message: 'Livestock removed' });
+        res.json({ success: true, message: 'Gauvansh removed' });
     } catch (error) {
         console.error('Error removing livestock:', error);
         res.status(500).json({ success: false, error: error.message });
@@ -173,7 +180,7 @@ exports.addHealthRecord = async (req, res) => {
         const { checkup_date, diagnosis, treatment, vet_name } = req.body; // Matches frontend
 
         const cattle = await Cattle.findOne({ where: { id, gaushala_id: req.user.id } });
-        if (!cattle) return res.status(404).json({ success: false, message: 'Livestock not found' });
+        if (!cattle) return res.status(404).json({ success: false, message: 'Gauvansh not found' });
 
         const record = await HealthRecord.create({
             cattle_id: id,

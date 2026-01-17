@@ -32,6 +32,7 @@ const LivestockPage: React.FC = () => {
     const [selectedAnimal, setSelectedAnimal] = useState<any>(null);
     const [editId, setEditId] = useState<string | null>(null);
     const [showHealthForm, setShowHealthForm] = useState(false);
+    const [deleteId, setDeleteId] = useState<string | null>(null);
 
     // Pagination & Filter State
     const [page, setPage] = useState(1);
@@ -48,6 +49,14 @@ const LivestockPage: React.FC = () => {
         return () => clearTimeout(timer);
     }, [page, limit, searchTerm, statusFilter, breedFilter]);
 
+    // ... fetchLivestock ... (omitted for brevity in replacement, but wait, replace_file_content needs exact target. I should probably target just the state area and the function area separately or be careful.)
+
+    // Actually, I will just add the state at top and replace handleDelete.
+    // Let's do it in chunks if possible, or one big replace if contiguous.
+    // The state is around line 34. handleDelete is around 171. They are far apart.
+    // I will use multi_replace.
+
+
     const fetchLivestock = async () => {
         try {
             setLoading(true);
@@ -60,10 +69,8 @@ const LivestockPage: React.FC = () => {
             });
             
             if (res.success) {
-                setLivestock(res.data.data || []);
-                if (res.data.pagination) {
-                    setTotalPages(res.data.pagination.totalPages);
-                } else if (res.pagination) {
+                setLivestock(res.data || []);
+                if (res.pagination) {
                      setTotalPages(res.pagination.totalPages);
                 }
             } else if (Array.isArray(res)) {
@@ -108,20 +115,20 @@ const LivestockPage: React.FC = () => {
                         ...values,
                         age: values.age ? parseInt(values.age) : undefined
                     });
-                    toast.success('Livestock updated successfully!');
+                    toast.success('Gauvansh updated successfully!');
                 } else {
                     await createLivestock({
                         ...values,
                         age: values.age ? parseInt(values.age) : undefined
                     });
-                    toast.success('Livestock added successfully!');
+                    toast.success('Gauvansh added successfully!');
                 }
                 setShowAddForm(false);
                 setEditId(null);
                 livestockForm.resetForm();
                 fetchLivestock();
             } catch (error: any) {
-                toast.error(error.response?.data?.message || `Failed to ${editId ? 'update' : 'add'} livestock`);
+                toast.error(error.response?.data?.message || `Failed to ${editId ? 'update' : 'add'} Gauvansh`);
             }
         },
     });
@@ -168,14 +175,19 @@ const LivestockPage: React.FC = () => {
         },
     });
 
-    const handleDelete = async (id: string) => {
-        if (!window.confirm('Are you sure you want to remove this livestock?')) return;
+    const handleDelete = (id: string) => {
+        setDeleteId(id);
+    };
+
+    const confirmDelete = async () => {
+        if (!deleteId) return;
         try {
-            await deleteLivestock(id);
-            toast.success('Livestock removed');
+            await deleteLivestock(deleteId);
+            toast.success('Gauvansh removed');
             fetchLivestock();
+            setDeleteId(null);
         } catch (error) {
-            toast.error('Failed to remove livestock');
+            toast.error('Failed to remove Gauvansh');
         }
     };
 
@@ -214,7 +226,7 @@ const LivestockPage: React.FC = () => {
 
     // ... existing helpers ...
 
-    if (loading && page === 1 && !livestock.length) return <div>Loading livestock...</div>;
+    if (loading && page === 1 && !livestock.length) return <div>Loading Gauvansh records...</div>;
 
     return (
         <div>
@@ -266,7 +278,7 @@ const LivestockPage: React.FC = () => {
                         marginLeft: 'auto'
                     }}
                 >
-                    <span style={{fontSize: '1.2rem', lineHeight: 1}}>+</span> Add Animal
+                    <span style={{fontSize: '1.2rem', lineHeight: 1}}>+</span> Add Gauvansh
                 </button>
             </div>
 
@@ -366,46 +378,102 @@ const LivestockPage: React.FC = () => {
                     zIndex: 1000
                 }}>
                     <div style={{background: 'white', padding: '2rem', borderRadius: '12px', width: '500px', maxHeight: '90vh', overflowY: 'auto'}}>
-                        <h2 style={{margin: '0 0 1.5rem 0'}}>{editId ? 'Edit Livestock' : 'Add New Livestock'}</h2>
+                        <h2 style={{margin: '0 0 1.5rem 0'}}>{editId ? 'Edit Gauvansh' : 'Add New Gauvansh'}</h2>
                         <form onSubmit={livestockForm.handleSubmit}>
-                            <div style={{marginBottom: '1rem'}}>
-                                <label style={{display: 'block', marginBottom: '0.5rem', fontWeight: 500}}>Tag ID</label>
-                                <input
-                                    type="text"
-                                    {...livestockForm.getFieldProps('tag_id')}
-                                    style={{width: '100%', padding: '0.75rem', border: '1px solid #e2e8f0', borderRadius: '8px'}}
-                                />
-                            </div>
+                            <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem'}}>
+                                <div>
+                                    <label style={{display: 'block', marginBottom: '0.5rem', fontWeight: 500}}>Tag ID *</label>
+                                    <input
+                                        type="text"
+                                        {...livestockForm.getFieldProps('tag_id')}
+                                        disabled={!!editId}
+                                        style={{width: '100%', padding: '0.75rem', border: '1px solid #e2e8f0', borderRadius: '8px'}}
+                                    />
+                                    {livestockForm.touched.tag_id && livestockForm.errors.tag_id && (
+                                        <div style={{color: 'red', fontSize: '0.75rem'}}>{livestockForm.errors.tag_id}</div>
+                                    )}
+                                </div>
+                                <div>
+                                    <label style={{display: 'block', marginBottom: '0.5rem', fontWeight: 500}}>RFID Tag</label>
+                                    <input
+                                        type="text"
+                                        {...livestockForm.getFieldProps('rfid_tag')}
+                                        style={{width: '100%', padding: '0.75rem', border: '1px solid #e2e8f0', borderRadius: '8px'}}
+                                    />
+                                </div>
 
-                            <div style={{marginBottom: '1rem'}}>
-                                <label style={{display: 'block', marginBottom: '0.5rem', fontWeight: 500}}>Type</label>
-                                <select
-                                    {...livestockForm.getFieldProps('type')}
-                                    style={{width: '100%', padding: '0.75rem', border: '1px solid #e2e8f0', borderRadius: '8px'}}
-                                >
-                                    <option value="COW">Cow</option>
-                                    <option value="BUFFALO">Buffalo</option>
-                                    <option value="CALF">Calf</option>
-                                    <option value="BULL">Bull</option>
-                                </select>
-                            </div>
+                                <div>
+                                    <label style={{display: 'block', marginBottom: '0.5rem', fontWeight: 500}}>Type *</label>
+                                    <select
+                                        {...livestockForm.getFieldProps('type')}
+                                        style={{width: '100%', padding: '0.75rem', border: '1px solid #e2e8f0', borderRadius: '8px'}}
+                                    >
+                                        <option value="COW">Cow</option>
+                                        <option value="BUFFALO">Buffalo</option>
+                                        <option value="BULL">Bull</option>
+                                        <option value="MALE_CALF">Male Calf</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label style={{display: 'block', marginBottom: '0.5rem', fontWeight: 500}}>Gender *</label>
+                                    <select
+                                        {...livestockForm.getFieldProps('gender')}
+                                        style={{width: '100%', padding: '0.75rem', border: '1px solid #e2e8f0', borderRadius: '8px'}}
+                                    >
+                                        <option value="FEMALE">Female</option>
+                                        <option value="MALE">Male</option>
+                                    </select>
+                                </div>
 
-                            <div style={{marginBottom: '1rem'}}>
-                                <label style={{display: 'block', marginBottom: '0.5rem', fontWeight: 500}}>Breed</label>
-                                <input
-                                    type="text"
-                                    {...livestockForm.getFieldProps('breed')}
-                                    style={{width: '100%', padding: '0.75rem', border: '1px solid #e2e8f0', borderRadius: '8px'}}
-                                />
-                            </div>
+                                <div>
+                                    <label style={{display: 'block', marginBottom: '0.5rem', fontWeight: 500}}>Breed</label>
+                                    <input
+                                        type="text"
+                                        {...livestockForm.getFieldProps('breed')}
+                                        style={{width: '100%', padding: '0.75rem', border: '1px solid #e2e8f0', borderRadius: '8px'}}
+                                    />
+                                </div>
+                                <div>
+                                    <label style={{display: 'block', marginBottom: '0.5rem', fontWeight: 500}}>Age (years)</label>
+                                    <input
+                                        type="number"
+                                        {...livestockForm.getFieldProps('age')}
+                                        style={{width: '100%', padding: '0.75rem', border: '1px solid #e2e8f0', borderRadius: '8px'}}
+                                    />
+                                </div>
 
-                            <div style={{marginBottom: '1rem'}}>
-                                <label style={{display: 'block', marginBottom: '0.5rem', fontWeight: 500}}>Age (years)</label>
-                                <input
-                                    type="number"
-                                    {...livestockForm.getFieldProps('age')}
-                                    style={{width: '100%', padding: '0.75rem', border: '1px solid #e2e8f0', borderRadius: '8px'}}
-                                />
+                                <div>
+                                    <label style={{display: 'block', marginBottom: '0.5rem', fontWeight: 500}}>Status *</label>
+                                    <select
+                                        {...livestockForm.getFieldProps('current_status')}
+                                        style={{width: '100%', padding: '0.75rem', border: '1px solid #e2e8f0', borderRadius: '8px'}}
+                                    >
+                                        <option value="MILKING">Milking</option>
+                                        <option value="DRY">Dry</option>
+                                        <option value="HEIFER">Heifer</option>
+                                        <option value="CALF">Calf</option>
+                                        <option value="SOLD">Sold</option>
+                                        <option value="DEAD">Dead</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label style={{display: 'block', marginBottom: '0.5rem', fontWeight: 500}}>Lactation No.</label>
+                                    <input
+                                        type="number"
+                                        {...livestockForm.getFieldProps('lactation_number')}
+                                        style={{width: '100%', padding: '0.75rem', border: '1px solid #e2e8f0', borderRadius: '8px'}}
+                                    />
+                                </div>
+
+                                <div>
+                                    <label style={{display: 'block', marginBottom: '0.5rem', fontWeight: 500}}>Group</label>
+                                    <input
+                                        type="text"
+                                        {...livestockForm.getFieldProps('current_group')}
+                                        placeholder="e.g. Shed A"
+                                        style={{width: '100%', padding: '0.75rem', border: '1px solid #e2e8f0', borderRadius: '8px'}}
+                                    />
+                                </div>
                             </div>
 
                             <div style={{display: 'flex', gap: '1rem', marginTop: '1.5rem'}}>
@@ -422,7 +490,7 @@ const LivestockPage: React.FC = () => {
                                         cursor: 'pointer'
                                     }}
                                 >
-                                    {editId ? 'Update Livestock' : 'Add Livestock'}
+                                    {editId ? 'Update Gauvansh' : 'Add Gauvansh'}
                                 </button>
                                 <button
                                     type="button"
@@ -447,6 +515,8 @@ const LivestockPage: React.FC = () => {
                             </div>
                         </form>
                     </div>
+                </div>
+            )}
 
 
             {/* Health Record Modal */}
@@ -540,6 +610,59 @@ const LivestockPage: React.FC = () => {
                                 </button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Delete Confirmation Modal */}
+            {deleteId && (
+                <div style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'rgba(0,0,0,0.5)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    zIndex: 1000
+                }}>
+                    <div style={{background: 'white', padding: '2rem', borderRadius: '12px', width: '400px', textAlign: 'center'}}>
+                        <h2 style={{margin: '0 0 1rem 0', color: '#e53e3e'}}>Confirm Delete</h2>
+                        <p style={{marginBottom: '1.5rem', color: '#4a5568'}}>
+                            Are you sure you want to delete this Gauvansh record? This action cannot be undone.
+                        </p>
+                        <div style={{display: 'flex', gap: '1rem', justifyContent: 'center'}}>
+                            <button
+                                onClick={() => setDeleteId(null)}
+                                style={{
+                                    padding: '0.75rem 1.5rem',
+                                    background: '#edf2f7',
+                                    color: '#4a5568',
+                                    border: 'none',
+                                    borderRadius: '8px',
+                                    fontWeight: 600,
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={confirmDelete}
+                                style={{
+                                    padding: '0.75rem 1.5rem',
+                                    background: '#e53e3e',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '8px',
+                                    fontWeight: 600,
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                Delete
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
