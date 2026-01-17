@@ -32,6 +32,7 @@ const LivestockPage: React.FC = () => {
     const [selectedAnimal, setSelectedAnimal] = useState<any>(null);
     const [editId, setEditId] = useState<string | null>(null);
     const [showHealthForm, setShowHealthForm] = useState(false);
+    const [deleteId, setDeleteId] = useState<string | null>(null);
 
     // Pagination & Filter State
     const [page, setPage] = useState(1);
