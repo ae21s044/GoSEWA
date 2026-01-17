@@ -52,8 +52,8 @@ const LoginPage: React.FC = () => {
   return (
     <div className={styles.container}>
       <div className={styles.card}>
-        <h1 className={styles.title}>Welcome Back</h1>
-        <p className={styles.subtitle}>Log in to access your GoSEWA dashboard</p>
+        <h1 className={styles.title}>Welcome</h1>
+
 
         <form onSubmit={formik.handleSubmit}>
           <div className={styles.formGroup}>
