@@ -85,7 +85,6 @@ const LivestockPage: React.FC = () => {
     const livestockForm = useFormik({
         initialValues: {
             tag_id: '',
-            rfid_tag: '',
             type: 'COW',
             breed: '',
             age: '',
@@ -98,7 +97,6 @@ const LivestockPage: React.FC = () => {
         },
         validationSchema: Yup.object({
             tag_id: Yup.string().required('Tag ID is required'),
-            rfid_tag: Yup.string(),
             type: Yup.string().required('Required'),
             breed: Yup.string(),
             age: Yup.number().min(0),
@@ -135,7 +133,6 @@ const LivestockPage: React.FC = () => {
         setEditId(animal.id);
         livestockForm.setValues({
             tag_id: animal.tag_id,
-            rfid_tag: animal.rfid_tag || '',
             type: animal.type,
             breed: animal.breed || '',
             age: animal.age ? animal.age.toString() : '',
@@ -247,7 +244,7 @@ const LivestockPage: React.FC = () => {
                     <option value="DRY">Dry</option>
                     <option value="HEIFER">Heifer</option>
                     <option value="CALF">Calf</option>
-                    <option value="SOLD">Sold</option>
+
                     <option value="DEAD">Dead</option>
                 </select>
                 <input 
@@ -391,14 +388,7 @@ const LivestockPage: React.FC = () => {
                                         <div style={{color: 'red', fontSize: '0.75rem'}}>{livestockForm.errors.tag_id}</div>
                                     )}
                                 </div>
-                                <div>
-                                    <label style={{display: 'block', marginBottom: '0.5rem', fontWeight: 500}}>RFID Tag</label>
-                                    <input
-                                        type="text"
-                                        {...livestockForm.getFieldProps('rfid_tag')}
-                                        style={{width: '100%', padding: '0.75rem', border: '1px solid #e2e8f0', borderRadius: '8px'}}
-                                    />
-                                </div>
+
 
                                 <div>
                                     <label style={{display: 'block', marginBottom: '0.5rem', fontWeight: 500}}>Type *</label>
@@ -450,7 +440,7 @@ const LivestockPage: React.FC = () => {
                                         <option value="DRY">Dry</option>
                                         <option value="HEIFER">Heifer</option>
                                         <option value="CALF">Calf</option>
-                                        <option value="SOLD">Sold</option>
+
                                         <option value="DEAD">Dead</option>
                                     </select>
                                 </div>
