@@ -33,6 +33,7 @@ const LivestockPage: React.FC = () => {
     const [editId, setEditId] = useState<string | null>(null);
     const [showHealthForm, setShowHealthForm] = useState(false);
     const [deleteId, setDeleteId] = useState<string | null>(null);
+    const [deleteId, setDeleteId] = useState<string | null>(null);
 
     // Pagination & Filter State
     const [page, setPage] = useState(1);
@@ -73,8 +74,6 @@ const LivestockPage: React.FC = () => {
                 if (res.pagination) {
                      setTotalPages(res.pagination.totalPages);
                 }
-            } else if (Array.isArray(res)) {
-                setLivestock(res);
             }
         } catch (error) {
             console.error('Failed to load livestock', error);
