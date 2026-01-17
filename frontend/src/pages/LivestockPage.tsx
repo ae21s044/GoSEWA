@@ -33,7 +33,6 @@ const LivestockPage: React.FC = () => {
     const [editId, setEditId] = useState<string | null>(null);
     const [showHealthForm, setShowHealthForm] = useState(false);
     const [deleteId, setDeleteId] = useState<string | null>(null);
-    const [deleteId, setDeleteId] = useState<string | null>(null);
 
     // Pagination & Filter State
     const [page, setPage] = useState(1);
@@ -609,6 +608,59 @@ const LivestockPage: React.FC = () => {
                                 </button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Delete Confirmation Modal */}
+            {deleteId && (
+                <div style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'rgba(0,0,0,0.5)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    zIndex: 1000
+                }}>
+                    <div style={{background: 'white', padding: '2rem', borderRadius: '12px', width: '400px', textAlign: 'center'}}>
+                        <h2 style={{margin: '0 0 1rem 0', color: '#e53e3e'}}>Confirm Delete</h2>
+                        <p style={{marginBottom: '1.5rem', color: '#4a5568'}}>
+                            Are you sure you want to delete this Gauvansh record? This action cannot be undone.
+                        </p>
+                        <div style={{display: 'flex', gap: '1rem', justifyContent: 'center'}}>
+                            <button
+                                onClick={() => setDeleteId(null)}
+                                style={{
+                                    padding: '0.75rem 1.5rem',
+                                    background: '#edf2f7',
+                                    color: '#4a5568',
+                                    border: 'none',
+                                    borderRadius: '8px',
+                                    fontWeight: 600,
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={confirmDelete}
+                                style={{
+                                    padding: '0.75rem 1.5rem',
+                                    background: '#e53e3e',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '8px',
+                                    fontWeight: 600,
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                Delete
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}

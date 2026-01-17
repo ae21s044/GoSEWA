@@ -151,9 +151,17 @@ exports.updateLivestock = async (req, res) => {
         }
 
         await cattle.update(updates);
-        res.json({ success: true, message: 'Gauvansh updated', data: cattle });
+        res.status(201).json({ success: true, message: 'Gauvansh updated successfully', data: cattle });
+
     } catch (error) {
         console.error('Error updating livestock:', error);
+        if (error.name === 'SequelizeUniqueConstraintError') {
+             const field = error.errors[0].path;
+             const message = field === 'tag_id' ? 'Tag ID already exists' : 
+                             field === 'rfid_tag' ? 'RFID Tag already exists' : 
+                             'Duplicate entry found';
+             return res.status(400).json({ success: false, message });
+        }
         res.status(500).json({ success: false, error: error.message });
     }
 };
