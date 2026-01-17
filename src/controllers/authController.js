@@ -3,7 +3,11 @@ const { hashPassword, comparePassword, generateToken } = require('../utils/authU
 
 exports.register = async (req, res) => {
   try {
-    const { email, password, phone, user_type, name } = req.body;
+    const { email, password, phone, user_type, name, full_name } = req.body;
+    console.log('Register Request Body:', req.body);
+    
+    // Handle both name and full_name
+    const nameToUse = name || full_name;
 
     // Check if user exists
     const existingUser = await User.findOne({ where: { email } });
@@ -24,7 +28,7 @@ exports.register = async (req, res) => {
       password_hash: hashedPassword,
       phone,
       user_type,
-      full_name: name
+      full_name: nameToUse
     });
 
     const token = generateToken(user);
